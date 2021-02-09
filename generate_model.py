@@ -2,11 +2,8 @@
 create the model from database
 """
 import pandas as pd
-from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
 import pickle as pkl
 
 # read df, make genres to str lists and drop all empty genres lists then

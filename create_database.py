@@ -4,6 +4,7 @@ create database by collecting song features from playlists which we know the gen
 
 import spotipy
 import pandas as pd
+import global_variables as gv
 
 # load credentials
 with open('spotify_secrets.txt', 'r') as file:
@@ -15,20 +16,9 @@ with open('spotify_secrets.txt', 'r') as file:
 sp = spotipy.Spotify(auth_manager=spotipy.SpotifyClientCredentials(client_id=client_id,
                                                                    client_secret=client_secret))
 
-genres = 'blues classical country disco hiphop jazz metal pop reggae rock electronic easy-listening'.split()
-
-playlists = '''7qACZGMjyo64TdUdKAegjp 3HYK6ri0GkvRcM6GkKh0hJ 
-            4mijVkpSXJziPiOrK7YX4M 0ZVSWcJIf7cvycEn9HUvps 6MXkE0uYF4XwU4VTtyrpfP 
-            5EyFMotmvSfDAZ4hSdKrbx 3pBfUFu8MkyiCYyZe849Ks 6gS3HhOiI17QNojjPuPzqc 
-            0TcXdt4sbITbwCwwFbKYyd 7dowgSWOmvdpwNkGFMUs6e 6I0NsYzfoj7yHXyvkZYoRx 
-            47RSt6JBM6AbqBxtggW1Jk'''.split()
-
-columns = ['genre', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness',
-           'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo']
-
 to_append = []
 
-for g in zip(genres, playlists):
+for g in zip(gv.genres, gv.playlists):
 
     # print progress
     print(g[0])
@@ -62,7 +52,7 @@ for g in zip(genres, playlists):
             to_append.append(track_data)
 
 # create the data frame
-audio_data = pd.DataFrame(to_append, columns=columns)
+audio_data = pd.DataFrame(to_append, columns=gv.columns)
 
 # and save as csv
 audio_data.to_csv('datasets/songs_main_genres.csv', sep=';', index=False)

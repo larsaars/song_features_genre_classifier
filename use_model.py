@@ -6,7 +6,8 @@ import spotipy
 from sklearn.ensemble import RandomForestClassifier
 from spotipy.oauth2 import SpotifyClientCredentials
 import pickle as pkl
-from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
+import global_variables as gv
 
 # load credentials
 with open('spotify_secrets.txt', 'r') as file:
@@ -20,11 +21,9 @@ sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id,
 
 # load model
 print('<< loading model...')
+model: RandomForestClassifier
 with open('models/model.pkl', 'rb') as file:
     model = pkl.load(file)
-
-    if model is RandomForestClassifier:
-        model.verbose = 0
 
 # print when done loading
 print('<< Done loading! Enter a song name or \'q\' to quit:')
@@ -58,5 +57,11 @@ while True:
                    ft['instrumentalness'], ft['liveness'],
                    ft['valence'], ft['tempo']]
 
-        # predict
-        print(model.predict([ft_list]))
+        # predict probabilities
+        probs = model.predict_proba([ft_list])[0]
+
+        # return probs
+        max_idx = np.argsort(-probs)[:3]
+        # print every idx
+        for idx3 in range(len(max_idx)):
+            print('<< %i: %s [%f]' % (idx3 + 1, gv.genres[max_idx[idx3]], probs[max_idx[idx3]]))
