@@ -42,7 +42,7 @@ for g in zip(genres, playlists):
     # code below can be looped if more tracks need to be analyzed
     tracks_af = sp.audio_features(tracks_list[:50])
     for track_num in range(0, 50):
-        ft = tracks_af['track_num']
+        ft = tracks_af[track_num]
         track_data = [ft['danceability'], ft['energy'], ft['key'],
                       ft['loudness'], ft['mode'],
                       ft['speechiness'], ft['acousticness'],
