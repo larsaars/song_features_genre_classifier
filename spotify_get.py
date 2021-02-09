@@ -1,3 +1,7 @@
+"""
+use the model, search for songs
+"""
+
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pickle as pkl
@@ -20,7 +24,7 @@ with open('models/model.pkl', 'rb') as file:
     model = pkl.load(file)
 
 # print when done loading
-print('<< Done! Enter a song name:')
+print('<< Done loading! Enter a song name or \'q\' to quit:')
 
 # loop prediction for input
 while True:
@@ -43,6 +47,11 @@ while True:
         print('<< %s - %s' % (track['name'], artists[0] if len(artists) == 1 else str(artists)))
         # else predict from features
         # get the features
-        ft = sp.audio_features(track['id'])
+        ft = sp.audio_features(track['id'])[0]
         # extract to list to be predictable
-        print(ft)
+        ft_list = [ft['danceability'], ft['energy'], ft['key'], ft['loudness'], ft['mode'], ft['speechiness'],
+                   ft['acousticness'], ft['instrumentalness'], ft['liveness'], ft['valence'], ft['tempo'],
+                   ft['duration_ms']]
+
+        # predict
+        print(model.predict([ft_list]))

@@ -1,3 +1,6 @@
+"""
+create the model from database
+"""
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -5,7 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 import pickle as pkl
 
 # read df, make genres to str lists and drop all empty genres lists then
-df = pd.read_csv('datasets/genre_db2.csv', sep=';')
+df = pd.read_csv('datasets/songs_main_genres.csv', sep=';')
 # df['genre'] = df.genre.apply(literal_eval)
 df = df[df.genre.apply(lambda gen: len(gen)) != 0]
 
