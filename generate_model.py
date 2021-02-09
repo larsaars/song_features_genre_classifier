@@ -2,15 +2,19 @@
 create the model from database
 """
 import pandas as pd
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 import pickle as pkl
 
 # read df, make genres to str lists and drop all empty genres lists then
 df = pd.read_csv('datasets/songs_main_genres.csv', sep=';')
 # df['genre'] = df.genre.apply(literal_eval)
 df = df[df.genre.apply(lambda gen: len(gen)) != 0]
+# delete index column
+
 
 # print the header of the df
 print(df.head())
@@ -23,13 +27,7 @@ trainY, testY = train.genre, test.genre
 trainX, testX = train.drop(columns=['genre']), test.drop(columns=['genre'])
 
 # create the model
-model = KNeighborsClassifier(n_jobs=1)  # verbose = 2
-# # create training time estimator
-# estimator = Estimator(meta_algo='RF', verbose=3)
-# # run the estimation
-# estimation, lower_bound, upper_bound = estimator._estimate(algo=model, X=trainX, y=trainY)
-# # print estimations
-# print('estimated time to train:\nesimation: %f\nlower: %f\nupper: %f' % (estimation, lower_bound, upper_bound))
+model = RandomForestClassifier(n_estimators=150)  # verbose = 2
 # fit linear regression
 model.fit(X=trainX, y=trainY)
 

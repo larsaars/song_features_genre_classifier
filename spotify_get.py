@@ -3,6 +3,7 @@ use the model, search for songs
 """
 
 import spotipy
+from sklearn.ensemble import RandomForestClassifier
 from spotipy.oauth2 import SpotifyClientCredentials
 import pickle as pkl
 from sklearn.neighbors import KNeighborsClassifier
@@ -19,9 +20,11 @@ sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id,
 
 # load model
 print('<< loading model...')
-model: KNeighborsClassifier
 with open('models/model.pkl', 'rb') as file:
     model = pkl.load(file)
+
+    if model is RandomForestClassifier:
+        model.verbose = 0
 
 # print when done loading
 print('<< Done loading! Enter a song name or \'q\' to quit:')
@@ -49,9 +52,11 @@ while True:
         # get the features
         ft = sp.audio_features(track['id'])[0]
         # extract to list to be predictable
-        ft_list = [ft['danceability'], ft['energy'], ft['key'], ft['loudness'], ft['mode'], ft['speechiness'],
-                   ft['acousticness'], ft['instrumentalness'], ft['liveness'], ft['valence'], ft['tempo'],
-                   ft['duration_ms']]
+        ft_list = [ft['danceability'], ft['energy'], ft['key'],
+                   ft['loudness'], ft['mode'],
+                   ft['speechiness'], ft['acousticness'],
+                   ft['instrumentalness'], ft['liveness'],
+                   ft['valence'], ft['tempo']]
 
         # predict
         print(model.predict([ft_list]))

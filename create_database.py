@@ -15,23 +15,27 @@ with open('spotify_secrets.txt', 'r') as file:
 sp = spotipy.Spotify(auth_manager=spotipy.SpotifyClientCredentials(client_id=client_id,
                                                                    client_secret=client_secret))
 
-genres = 'blues classical country disco hiphop jazz metal pop reggae rock electronic'.split()
+genres = 'blues classical country disco hiphop jazz metal pop reggae rock electronic easy-listening'.split()
 
 playlists = '''7qACZGMjyo64TdUdKAegjp 3HYK6ri0GkvRcM6GkKh0hJ 
             4mijVkpSXJziPiOrK7YX4M 0ZVSWcJIf7cvycEn9HUvps 6MXkE0uYF4XwU4VTtyrpfP 
             5EyFMotmvSfDAZ4hSdKrbx 3pBfUFu8MkyiCYyZe849Ks 6gS3HhOiI17QNojjPuPzqc 
-            0TcXdt4sbITbwCwwFbKYyd 7dowgSWOmvdpwNkGFMUs6e 6I0NsYzfoj7yHXyvkZYoRx'''.split()
+            0TcXdt4sbITbwCwwFbKYyd 7dowgSWOmvdpwNkGFMUs6e 6I0NsYzfoj7yHXyvkZYoRx 
+            47RSt6JBM6AbqBxtggW1Jk'''.split()
 
-columns = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness',
-           'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo', 'genre']
+columns = ['genre', 'danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness',
+           'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo']
 
 to_append = []
 
 for g in zip(genres, playlists):
 
+    # print progress
+    print(g[0])
+
     # get playlist for given genre (default limit is 100)
     track_ids = sp.playlist_items(g[1],
-                                  fields='items(track(id))')
+                                  fields='items(track(id))', limit=100)
     # some lists for gathering data
     tracks_list = []
 
@@ -40,18 +44,25 @@ for g in zip(genres, playlists):
 
     # get audio features for 50 tracks at a time (spotipy only allows 50 at once)
     # code below can be looped if more tracks need to be analyzed
-    tracks_af = sp.audio_features(tracks_list[:50])
-    for track_num in range(0, 50):
-        ft = tracks_af[track_num]
-        track_data = [ft['danceability'], ft['energy'], ft['key'],
-                      ft['loudness'], ft['mode'],
-                      ft['speechiness'], ft['acousticness'],
-                      ft['instrumentalness'], ft['liveness'],
-                      ft['valence'], ft['tempo'], g[0]]
-        to_append.append(track_data)
+    for from_idx in range(0, len(tracks_list), 50):
+
+        to_idx = from_idx + 50
+        if to_idx > len(tracks_list):
+            to_idx = len(tracks_list)
+
+        tracks_af = sp.audio_features(tracks_list[from_idx:to_idx])
+
+        for track_num in range(0, 50):
+            ft = tracks_af[track_num]
+            track_data = [g[0], ft['danceability'], ft['energy'], ft['key'],
+                          ft['loudness'], ft['mode'],
+                          ft['speechiness'], ft['acousticness'],
+                          ft['instrumentalness'], ft['liveness'],
+                          ft['valence'], ft['tempo']]
+            to_append.append(track_data)
 
 # create the data frame
 audio_data = pd.DataFrame(to_append, columns=columns)
 
 # and save as csv
-audio_data.to_csv('datasets/songs_main_genres.csv', sep=';')
+audio_data.to_csv('datasets/songs_main_genres.csv', sep=';', index=False)
