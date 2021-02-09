@@ -1,11 +1,9 @@
 import numpy as np
 import pandas as pd
+from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix
 import pickle as pkl
-from ast import literal_eval
 
 # read df, make genres to str lists and drop all empty genres lists then
 df = pd.read_csv('datasets/genre_db2.csv', sep=';')
@@ -22,8 +20,15 @@ train, test = train_test_split(df, test_size=0.2)
 trainY, testY = train.genre, test.genre
 trainX, testX = train.drop(columns=['genre']), test.drop(columns=['genre'])
 
+# create the model
+model = RandomForestClassifier(n_estimators=100, verbose=2, n_jobs=3)
+# # create training time estimator
+# estimator = Estimator(meta_algo='RF', verbose=3)
+# # run the estimation
+# estimation, lower_bound, upper_bound = estimator._estimate(algo=model, X=trainX, y=trainY)
+# # print estimations
+# print('estimated time to train:\nesimation: %f\nlower: %f\nupper: %f' % (estimation, lower_bound, upper_bound))
 # fit linear regression
-model = RandomForestClassifier(n_estimators=100, verbose=1, n_jobs=3)
 model.fit(X=trainX, y=trainY)
 
 # dump model into file after generating
