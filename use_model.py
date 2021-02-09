@@ -4,25 +4,15 @@ use the model, search for songs
 
 import spotipy
 from sklearn.ensemble import RandomForestClassifier
-from spotipy.oauth2 import SpotifyClientCredentials
+from login_spotify import sp
 import pickle as pkl
 import numpy as np
 import global_variables as gv
 
-# load credentials
-with open('spotify_secrets.txt', 'r') as file:
-    content = file.read().splitlines()
-    client_id = content[0]
-    client_secret = content[1]
-
-# login
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id,
-                                                           client_secret=client_secret))
-
 # load model
 print('<< loading model...')
 model: RandomForestClassifier
-with open('models/model.pkl', 'rb') as file:
+with open(gv.model_file, 'rb') as file:
     model = pkl.load(file)
 
 # print when done loading

@@ -5,16 +5,7 @@ create database by collecting song features from playlists which we know the gen
 import spotipy
 import pandas as pd
 import global_variables as gv
-
-# load credentials
-with open('spotify_secrets.txt', 'r') as file:
-    content = file.read().splitlines()
-    client_id = content[0]
-    client_secret = content[1]
-
-# login
-sp = spotipy.Spotify(auth_manager=spotipy.SpotifyClientCredentials(client_id=client_id,
-                                                                   client_secret=client_secret))
+from login_spotify import sp
 
 to_append = []
 
@@ -55,4 +46,4 @@ for g in zip(gv.genres, gv.playlists):
 audio_data = pd.DataFrame(to_append, columns=gv.columns)
 
 # and save as csv
-audio_data.to_csv('datasets/songs_main_genres.csv', sep=';', index=False)
+audio_data.to_csv(gv.db_file, sep=';', index=False)

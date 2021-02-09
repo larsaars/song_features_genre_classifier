@@ -5,9 +5,10 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import pickle as pkl
+import global_variables as gv
 
 # read df, make genres to str lists and drop all empty genres lists then
-df = pd.read_csv('datasets/songs_main_genres.csv', sep=';')
+df = pd.read_csv(gv.db_file, sep=';')
 # df['genre'] = df.genre.apply(literal_eval)
 df = df[df.genre.apply(lambda gen: len(gen)) != 0]
 # delete index column
@@ -29,7 +30,7 @@ model = RandomForestClassifier(n_estimators=150)  # verbose = 2
 model.fit(X=trainX, y=trainY)
 
 # dump model into file after generating
-with open('models/model.pkl', 'wb') as file:
+with open(gv.model_file, 'wb') as file:
     pkl.dump(model, file)
 
 # print test score
